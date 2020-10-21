@@ -26,15 +26,15 @@ db.connect((err) => {
 router.post('/addnewuser', (req, res) => {
     
     const newUser = {
-        first_name: req.body.first_name, 
-        last_name: req.body.last_name,
+        first_name: req.body.name, 
+        last_name: req.body.surname
     };
 
     if (!newUser.first_name || !newUser.last_name) {
         return res.status(400).json({msg: 'Please include first and last name'});
     };
 
-    const sql = 'INSERT INTO users SET ?';
+    const sql = 'INSERT IGNORE INTO users SET ?'; //siliently ignores errors when adding data 
 
     const query = db.query(sql, newUser, (err, result) => {
         if (err) throw err;
@@ -45,6 +45,22 @@ router.post('/addnewuser', (req, res) => {
 
 
 });
+
+
+//Get set of questions
+router.get('/:set', (req, res) => { 
+
+
+
+    // //check if id is found by using "some" method that returns boolean
+    // const found = members.some(member => member.id === parseInt(req.params.set));
+    
+    // if(found){
+    // res.json(members.filter(member => member.id === parseInt(req.params.set)));
+    // } else { //if not found we give status response 400 meaning its a bad request and a json object with message
+    //     res.status(400).json({msg: `No set number ${req.params.set} found`});
+    // }
+ });
 
 
 

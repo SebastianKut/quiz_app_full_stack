@@ -5,16 +5,19 @@ const path = require('path');
 //INITIALIZE SERVER======================================================
 
 const app = express();
-const PORT = process.env.PORT || 5000
-
-app.listen(PORT, () => console.log(`Server started om port ${PORT}`));
-
-//SET STATIC FOLDER 
-app.use(express.static(path.join(__dirname, 'public')));
 
 //INIT PARSER AND HANDLE FORM SUBMISSION
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+
+const PORT = process.env.PORT || 5000
+
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+
+//SET STATIC FOLDER 
+app.use(express.static(path.join(__dirname, 'public')));
+
 
 //SET UP API ROUTES
 const testApi = require('./api/test');
