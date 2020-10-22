@@ -22,9 +22,10 @@ db.connect((err) => {
     } console.log('MySql Connected...');
 })
 
-//Create user
+//CREATE USER 
 router.post('/addnewuser', (req, res) => {
     
+    //data from front-end
     const newUser = {
         first_name: req.body.name, 
         last_name: req.body.surname
@@ -34,34 +35,50 @@ router.post('/addnewuser', (req, res) => {
         return res.status(400).json({msg: 'Please include first and last name'});
     };
 
-    const sql = 'INSERT IGNORE INTO users SET ?'; //siliently ignores errors when adding data 
+    const sql = 'INSERT IGNORE INTO users SET ?'; //INSERT IGNORE siliently ignores errors when adding data 
 
-    const query = db.query(sql, newUser, (err, result) => {
+    db.query(sql, newUser, (err, result) => {
         if (err) throw err;
         console.log(result);
         res.send('User added...');
-    })
-
-
+    });
 
 });
 
 
-//Get set of questions
+//GET SET OF QUESTIONS
 router.get('/:set', (req, res) => { 
 
+    const sql = `SELECT
+                questions.question_id,
+                questions.question_body,
+                questions.is_multiple_choice,
+                questions.set_number,
+                question_choices.choice_id,
+                question_choices.choice_body
+                FROM questions
+                INNER JOIN question_choices on question_choices.questions_id = questions.question_id
+                ORDER BY questions.set_number;`;
 
+    db.query(sql, (err, result) => {
+        if (err) throw err;
+        const questions = result;
 
-    // //check if id is found by using "some" method that returns boolean
-    // const found = members.some(member => member.id === parseInt(req.params.set));
-    
-    // if(found){
-    // res.json(members.filter(member => member.id === parseInt(req.params.set)));
-    // } else { //if not found we give status response 400 meaning its a bad request and a json object with message
-    //     res.status(400).json({msg: `No set number ${req.params.set} found`});
-    // }
+        const found = questions.some(question => question.set_number === parseInt(req.params.set));
+
+        if (found) {
+            res.json(questions.filter(question => question.set_number === parseInt(req.params.set)));
+            } else { 
+                res.status(400).json({msg: `No set number ${req.params.set} found`});
+            }
+    });           
+
  });
 
 
+
+ // '/submitanswers
+
+ // '/checkscore
 
 module.exports = router;
