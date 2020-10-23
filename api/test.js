@@ -50,15 +50,15 @@ router.post('/addnewuser', (req, res) => {
 router.get('/:set', (req, res) => { 
 
     const sql = `SELECT
-                questions.question_id,
-                questions.question_body,
-                questions.is_multiple_choice,
-                questions.set_number,
-                question_choices.choice_id,
-                question_choices.choice_body
-                FROM questions
-                INNER JOIN question_choices on question_choices.questions_id = questions.question_id
-                ORDER BY questions.set_number;`;
+    questions.question_id,
+    questions.question_body,
+    questions.is_multiple_choice,
+    questions.set_number,
+    question_choices.choice_id,
+    question_choices.choice_body
+    FROM questions
+    INNER JOIN question_choices on question_choices.questions_id = questions.question_id
+    ORDER BY questions.set_number;`;
 
     db.query(sql, (err, result) => {
         if (err) throw err;
@@ -67,6 +67,9 @@ router.get('/:set', (req, res) => {
         const found = questions.some(question => question.set_number === parseInt(req.params.set));
 
         if (found) {
+            //modify db json response so it returns array of question choices
+
+
             res.json(questions.filter(question => question.set_number === parseInt(req.params.set)));
             } else { 
                 res.status(400).json({msg: `No set number ${req.params.set} found`});
