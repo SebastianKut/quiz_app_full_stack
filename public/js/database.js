@@ -1,7 +1,6 @@
 //Load Questions
 window.addEventListener("DOMContentLoaded", async () => {
     const questions = await getQuestions();
-    console.log(questions);
     displayQuestions(questions);
 });
 
@@ -23,8 +22,6 @@ const getQuestions = async () => {
 
 //Display questions function - definition of the function to map questions and choices
 
-
-
 const displayQuestions = arrayOfObjects => {
 
     const questionsDiv =  document.getElementById('questions');
@@ -43,17 +40,17 @@ const displayQuestions = arrayOfObjects => {
 
 
     //Create html string for each question
-    const allQuestions = '';
+    let allQuestions = '';
 
     for (let i = 0; i < arrayOfQuestionId.length; i++) {
 
         let filtered = arrayOfObjects.filter(object => object.question_id === arrayOfQuestionId[i]);
         //generate question
-        allQuestions += `<p>${filtered[0].question_body}</p>`;
+        allQuestions += `<p id="question${i+1}" title="${filtered[0].question_id}">${filtered[0].question_body}</p>`;
         //generate all answer choices
         const choices = filtered.map(object => `
-                <input id=${object.choice_id} type="radio" name="choice" value="choice${object.choice_id}">
-                <label for="${object.choice_id}">${object.choice_body}</label><br>
+                <input id="choice${i+1}" type="radio" name="choice" value="${object.choice_id}">
+                <label for="choice${i+1}">${object.choice_body}</label><br>
                 ` 
         );
         allQuestions += choices.join(''); 
@@ -81,13 +78,12 @@ function submitAnswers (e) {
 
     e.preventDefault();
 
-    addUser(e);
     addAnswers(e);
     getResults(e);
 
 };
 
-//Add user to database function
+//Add user to database function (NOT USED ATM)
 const addUser = async (e) => {
 
     await fetch(`http://localhost:5000/api/test/addnewuser`, {
@@ -105,6 +101,19 @@ const addUser = async (e) => {
 
 //Add answers
 const addAnswers = async (e) => {
+
+    await fetch(`http://localhost:5000/api/test/submittest`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({//FIGURE OUT HOW TO GET THOSE VALUES FROM THE FORM BEST WAY
+                        name: firstName.value,
+                        surname: lastName.value,
+                        questionId: '',//?????????????
+                        choiceId: ''//????????????????
+                })
+            });
 
 
 };

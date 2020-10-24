@@ -8,7 +8,8 @@ const db = mysql.createConnection({
     host:       'localhost',
     user:       'admin',
     password:   'test1234',
-    database:   'quiz'
+    database:   'quiz',
+    multipleStatements: true
 });
 
 //Connect to db===============================================
@@ -67,9 +68,6 @@ router.get('/:set', (req, res) => {
         const found = questions.some(question => question.set_number === parseInt(req.params.set));
 
         if (found) {
-            //modify db json response so it returns array of question choices
-
-
             res.json(questions.filter(question => question.set_number === parseInt(req.params.set)));
             } else { 
                 res.status(400).json({msg: `No set number ${req.params.set} found`});
@@ -81,6 +79,28 @@ router.get('/:set', (req, res) => {
 
 
  // '/submitanswers
+ router.post('/submittest', (req, res) => {
+    
+    //data from front-end
+    const data = [req.body.name, req.body.surname, req.body.questionId, req.body.choiceId];
+
+    //for single question atm
+    const sql = `INSERT INTO users (first_name, last_name) VALUES (?,?);
+                 INSERT INTO tests (users_id) VALUES (LAST_INSERT_ID());
+                 INSERT INTO answers (questions_id, choices_id, tests_id) VALUES ( 
+                        (SELECT question_id FROM questions WHERE question_id = ?),
+                        (SELECT choice_id FROM question_choices WHERE choice_id = ?),
+                        LAST_INSERT_ID()
+                        );`
+
+    db.query(sql, data, (err, result) => {
+        if (err) throw err;
+        console.log(result);
+        res.send('Answers submited...');
+    });
+
+});
+
 
  // '/checkscore
 
