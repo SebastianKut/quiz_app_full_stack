@@ -82,16 +82,26 @@ router.get('/:set', (req, res) => {
  router.post('/submittest', (req, res) => {
     
     //data from front-end
-    const data = [req.body.name, req.body.surname, req.body.questionId, req.body.choiceId];
-
-    //for single question atm
+    const data = [req.body.name, req.body.surname, req.body.questionOneId, req.body.choiceOneId, req.body.questionTwoId, req.body.choiceTwoId, req.body.questionThreeId, req.body.choiceThreeId, req.body.questionFourId, req.body.choiceFourId, req.body.questionFiveId, req.body.choiceFiveId];
+    
     const sql = `INSERT INTO users (first_name, last_name) VALUES (?,?);
                  INSERT INTO tests (users_id) VALUES (LAST_INSERT_ID());
-                 INSERT INTO answers (questions_id, choices_id, tests_id) VALUES ( 
-                        (SELECT question_id FROM questions WHERE question_id = ?),
+                 INSERT INTO answers (questions_id, choices_id, tests_id) VALUES 
+                        ((SELECT question_id FROM questions WHERE question_id = ?),
                         (SELECT choice_id FROM question_choices WHERE choice_id = ?),
-                        LAST_INSERT_ID()
-                        );`
+                        LAST_INSERT_ID()),
+                        ((SELECT question_id FROM questions WHERE question_id = ?),
+                        (SELECT choice_id FROM question_choices WHERE choice_id = ?),
+                        LAST_INSERT_ID()),
+                        ((SELECT question_id FROM questions WHERE question_id = ?),
+                        (SELECT choice_id FROM question_choices WHERE choice_id = ?),
+                        LAST_INSERT_ID()),
+                        ((SELECT question_id FROM questions WHERE question_id = ?),
+                        (SELECT choice_id FROM question_choices WHERE choice_id = ?),
+                        LAST_INSERT_ID()),
+                        ((SELECT question_id FROM questions WHERE question_id = ?),
+                        (SELECT choice_id FROM question_choices WHERE choice_id = ?),
+                        LAST_INSERT_ID());`
 
     db.query(sql, data, (err, result) => {
         if (err) throw err;

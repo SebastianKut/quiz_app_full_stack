@@ -49,8 +49,8 @@ const displayQuestions = arrayOfObjects => {
         allQuestions += `<p id="question${i+1}" title="${filtered[0].question_id}">${filtered[0].question_body}</p>`;
         //generate all answer choices
         const choices = filtered.map(object => `
-                <input id="choice${i+1}" type="radio" name="choice" value="${object.choice_id}">
-                <label for="choice${i+1}">${object.choice_body}</label><br>
+                <input id="choice${object.choice_id}" type="radio" name="${filtered[0].question_id}" value="${object.choice_id}">
+                <label for="choice${object.choice_id}">${object.choice_body}</label><br>
                 ` 
         );
         allQuestions += choices.join(''); 
@@ -77,9 +77,8 @@ if (submitBtn){
 function submitAnswers (e) {
 
     e.preventDefault();
-
     addAnswers(e);
-    getResults(e);
+  //  getResults(e);
 
 };
 
@@ -99,24 +98,59 @@ const addUser = async (e) => {
 
 };
 
+
 //Add answers
 const addAnswers = async (e) => {
 
+   
     await fetch(`http://localhost:5000/api/test/submittest`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({//FIGURE OUT HOW TO GET THOSE VALUES FROM THE FORM BEST WAY
-                        name: firstName.value,
-                        surname: lastName.value,
-                        questionId: '',//?????????????
-                        choiceId: ''//????????????????
-                })
+                body: JSON.stringify(getAnswers())
             });
 
 
 };
+
+//Get answers from form- returns object that I can pass to POST body
+const getAnswers = () => {
+
+    const form = document.getElementById('test').elements;
+    const nameArr = [];
+    const answersArr = [];
+       
+    for (let i = 0; i<form.length; i++) {
+        if (form[i].type === 'text') nameArr.push(form[i].value);
+        if (form[i].checked === true) {
+            answersArr.push(form[i].name);
+            answersArr.push(form[i].value);
+        };      
+    }; 
+
+
+    const result = {
+        name:               nameArr[0],
+        surname:            nameArr[1],
+        questionOneId:      answersArr[0],
+        choiceOneId:        answersArr[1],
+        questionTwoId:      answersArr[2],
+        choiceTwoId:        answersArr[3],
+        questionThreeId:    answersArr[4],
+        choiceThreeId:      answersArr[5],
+        questionFourId:     answersArr[6],
+        choiceFourId:       answersArr[7],
+        questionFiveId:     answersArr[8],
+        choiceFiveId:       answersArr[9]
+    };
+
+    return result;
+
+};
+   
+
+    
 
 //Get results
 const getResults = async (e) => {
