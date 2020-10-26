@@ -64,7 +64,7 @@ router.get('/:set', (req, res) => {
     db.query(sql, (err, result) => {
         if (err) throw err;
         const questions = result;
-
+        console.log(result);
         const found = questions.some(question => question.set_number === parseInt(req.params.set));
 
         if (found) {
@@ -105,13 +105,42 @@ router.get('/:set', (req, res) => {
 
     db.query(sql, data, (err, result) => {
         if (err) throw err;
-        console.log(result);
-        res.send('Answers submited...');
+        const testId = result[1].insertId;
+        res.json({message: 'Answers submitted', testId: testId});
     });
 
 });
 
 
- // '/checkscore
+ // GET RESULTS - FIGURE OUT WHAT SQL QUERY I NEED AND HOW TO ADD USER ID TO ANSWERS WHEN SUBMITTING BECAUSE IT DOESNT ADD ATM
+ router.get('/getresults/:testid', (req, res) => { 
+
+    const sql = `SELECT
+    questions.question_id,
+    questions.question_body,
+    questions.is_multiple_choice,
+    questions.set_number,
+    question_choices.choice_id,
+    question_choices.choice_body
+    FROM questions
+    INNER JOIN question_choices on question_choices.questions_id = questions.question_id
+    ORDER BY questions.set_number;`;
+
+    db.query(sql, (err, result) => {
+        if (err) throw err;
+        const questions = result;
+        console.log(result);
+        const found = questions.some(question => question.set_number === parseInt(req.params.set));
+
+        if (found) {
+            res.json(questions.filter(question => question.set_number === parseInt(req.params.set)));
+            } else { 
+                res.status(400).json({msg: `No set number ${req.params.set} found`});
+            }
+    });           
+
+ });
+
+
 
 module.exports = router;

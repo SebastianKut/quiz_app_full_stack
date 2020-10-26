@@ -74,36 +74,38 @@ if (submitBtn){
     submitBtn.addEventListener('click', submitAnswers);
 };
 
-function submitAnswers (e) {
+async function submitAnswers (e) {
 
     e.preventDefault();
-    addAnswers(e);
-  //  getResults(e);
+   const response = await addAnswers();
+   const testId = response.testId;
+   console.log(testId);
+   //getResults(testId);
 
 };
 
 //Add user to database function (NOT USED ATM)
-const addUser = async (e) => {
+// const addUser = async (e) => {
 
-    await fetch(`http://localhost:5000/api/test/addnewuser`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-                name: firstName.value,
-                surname: lastName.value
-        })
-    });
+//     await fetch(`http://localhost:5000/api/test/addnewuser`, {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify({
+//                 name: firstName.value,
+//                 surname: lastName.value
+//         })
+//     });
 
-};
+// };
 
 
 //Add answers
-const addAnswers = async (e) => {
+const addAnswers = async () => {
 
    
-    await fetch(`http://localhost:5000/api/test/submittest`, {
+    const response = await fetch(`http://localhost:5000/api/test/submittest`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -111,6 +113,7 @@ const addAnswers = async (e) => {
                 body: JSON.stringify(getAnswers())
             });
 
+     return response.json();       
 
 };
 
