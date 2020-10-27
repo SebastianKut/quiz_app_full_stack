@@ -78,7 +78,7 @@ router.get('/:set', (req, res) => {
 
 
 
- // '/submitanswers
+ // SUBMIT ANSWERS
  router.post('/submittest', (req, res) => {
     
     //data from front-end
@@ -117,7 +117,7 @@ router.get('/:set', (req, res) => {
 });
 
 
- // GET RESULTS - FIGURE OUT WHAT SQL QUERY I NEED AND HOW TO ADD USER ID TO ANSWERS WHEN SUBMITTING BECAUSE IT DOESNT ADD ATM
+ // GET RESULTS 
  router.get('/getresults/:testid', (req, res) => { 
 
     const sql = `SELECT
@@ -131,22 +131,22 @@ router.get('/:set', (req, res) => {
     WHERE answers.tests_id = ${req.params.testid}
     ORDER BY answers.questions_id;`;
 
+    
+
     db.query(sql, (err, result) => {
         if (err) throw err;
         const answers = result;
-      
+        let correct = 0;
+        let wrong = 0;
+        let testResult = 0;
+        let passed = false;
+
         const found = answers.some(answer => answer.tests_id === parseInt(req.params.testid));
 
         if (!found) { 
             res.status(400).json({msg: `No test with id of ${req.params.testid} found`})
         } else {
-
-            //check if passed and send response to front end
-            let correct = 0;
-            let wrong = 0;
-            let testResult = 0;
-            let passed = false;
-
+            //check if passed and send response 
             for (let i = 0; i < answers.length; i++) {
                 if (answers[i].is_correct == 1) correct ++;
                 if (answers[i].is_correct == 0) wrong ++;
@@ -157,23 +157,27 @@ router.get('/:set', (req, res) => {
             if (testResult === 1) passed = true;
             if (testResult < 1) passed = false;
 
-            res.json({
-                test_id:        answers.tests_id,
-                correct:        correct,
-                wrong:          wrong,
-                result:         testResult,
-                passed:         passed
+            //Insert results to db
+            const data = [passed ? '1' : '0', testResult, req.params.testid];
+            const newSql = `UPDATE tests SET passed = ?, score = ?, date_taken = NOW() WHERE test_id = ?;`;
+
+            db.query(newSql, data, (err, result) => {
+                if (err) throw err;
+            
+                res.json({
+                    test_id:        req.params.testid,
+                    correct:        correct,
+                    wrong:          wrong,
+                    result:         testResult,
+                    passed:         passed
+                });
+
             });
-
         };
-
     });           
 
+    
+
  });
-
-
-
-
-
 
 module.exports = router;
