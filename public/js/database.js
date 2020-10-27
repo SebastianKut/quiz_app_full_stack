@@ -1,3 +1,4 @@
+
 //Load Questions
 window.addEventListener("DOMContentLoaded", async () => {
     const questions = await getQuestions();
@@ -49,7 +50,7 @@ const displayQuestions = arrayOfObjects => {
         allQuestions += `<p id="question${i+1}" title="${filtered[0].question_id}">${filtered[0].question_body}</p>`;
         //generate all answer choices
         const choices = filtered.map(object => `
-                <input id="choice${object.choice_id}" type="radio" name="${filtered[0].question_id}" value="${object.choice_id}">
+                <input id="choice${object.choice_id}" type="radio" name="${filtered[0].question_id}" value="${object.choice_id} required">
                 <label for="choice${object.choice_id}">${object.choice_body}</label><br>
                 ` 
         );
@@ -76,12 +77,16 @@ if (submitBtn){
 
 async function submitAnswers (e) {
 
-    e.preventDefault();
+   e.preventDefault();
+
+   if (validateInput()) {
    const response = await addAnswers();
    const testId = response.testId;
-   console.log(testId);
-   //getResults(testId);
-
+   const results = await getResults(testId);
+   
+   console.log(results); 
+   await displayResultPage(results);
+   }; 
 };
 
 //Add user to database function (NOT USED ATM)
@@ -117,7 +122,7 @@ const addAnswers = async () => {
 
 };
 
-//Get answers from form- returns object that I can pass to POST body
+//Get answers from frontend - returns object that I can pass to POST body
 const getAnswers = () => {
 
     const form = document.getElementById('test').elements;
@@ -153,10 +158,55 @@ const getAnswers = () => {
 };
    
 
-    
-
-//Get results
-const getResults = async (e) => {
-//get results by fetching api
-//redirect to results page
+//Get results function
+const getResults = async (id) => {
+    //get results
+    try {
+        const data = await fetch(`http://localhost:5000/api/test/getresults/${id}`);
+        const result = await data.json();
+        return result;
+       
+    } catch (err) {
+        console.log(err);
+    }
 };
+
+//dispaly results - MAKE IT SO IT FETCHES TEMPLATE WITH RESULTS
+const displayResultPage = async (resultsObject) => {
+
+    const displayResult = document.getElementById('test-result');
+    const score = document.getElementById('score');
+    const resultsBox = document.getElementById('results-box');
+    const form = document.getElementById('test');
+
+    if(displayResult && score) {
+        displayResult.innerHTML = `You ${resultsObject.passed ? "passed" : "failed" }`;
+        score.innerHTML = `Your score: ${resultsObject.result*100}%`;
+        resultsBox.style.display = 'block';
+        form.style.display = 'none';
+    } else {
+        console.log ('Page elements not found');
+    }
+};
+
+//Validate Form
+ function validateInput() {
+    const form = document.getElementById('test').elements;
+    let formValid = false;
+    let counter = 0;
+
+    for (let i = 0; i < form.length; i++) {
+        if (form[i].checked || form[i].value!=='') counter++;                  
+    }
+
+    if (counter !== 7) {
+            alert('Fill out all fields')
+    } else {
+            formValid = true;
+      }
+
+    console.log(counter); //SORT OUT THIS FUCKIN COUNTER!!!!!!
+
+    return formValid
+}
+

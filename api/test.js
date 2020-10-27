@@ -23,28 +23,28 @@ db.connect((err) => {
     } console.log('MySql Connected...');
 })
 
-//CREATE USER 
-router.post('/addnewuser', (req, res) => {
+//CREATE USER - NOT USED 
+// router.post('/addnewuser', (req, res) => {
     
-    //data from front-end
-    const newUser = {
-        first_name: req.body.name, 
-        last_name: req.body.surname
-    };
+//     //data from front-end
+//     const newUser = {
+//         first_name: req.body.name, 
+//         last_name: req.body.surname
+//     };
 
-    if (!newUser.first_name || !newUser.last_name) {
-        return res.status(400).json({msg: 'Please include first and last name'});
-    };
+//     if (!newUser.first_name || !newUser.last_name) {
+//         return res.status(400).json({msg: 'Please include first and last name'});
+//     };
 
-    const sql = 'INSERT IGNORE INTO users SET ?'; //INSERT IGNORE siliently ignores errors when adding data 
+//     const sql = 'INSERT IGNORE INTO users SET ?'; //INSERT IGNORE siliently ignores errors when adding data 
 
-    db.query(sql, newUser, (err, result) => {
-        if (err) throw err;
-        console.log(result);
-        res.send('User added...');
-    });
+//     db.query(sql, newUser, (err, result) => {
+//         if (err) throw err;
+//         console.log(result);
+//         res.send('User added...');
+//     });
 
-});
+// });
 
 
 //GET SET OF QUESTIONS
@@ -82,7 +82,9 @@ router.get('/:set', (req, res) => {
  router.post('/submittest', (req, res) => {
     
     //data from front-end
-    const data = [req.body.name, req.body.surname, req.body.questionOneId, req.body.choiceOneId, req.body.questionTwoId, req.body.choiceTwoId, req.body.questionThreeId, req.body.choiceThreeId, req.body.questionFourId, req.body.choiceFourId, req.body.questionFiveId, req.body.choiceFiveId];
+    const data =    [req.body.name, req.body.surname, req.body.questionOneId, req.body.choiceOneId, req.body.questionTwoId, 
+                    req.body.choiceTwoId, req.body.questionThreeId, req.body.choiceThreeId, req.body.questionFourId, req.body.choiceFourId, 
+                    req.body.questionFiveId, req.body.choiceFiveId];
     
     const sql = `INSERT INTO users (first_name, last_name) VALUES (?,?);
                  INSERT INTO tests (users_id) VALUES (LAST_INSERT_ID());
@@ -132,9 +134,10 @@ router.get('/:set', (req, res) => {
     ORDER BY answers.questions_id;`;
 
     
-
+    //check answers, add results to database and return response with results
     db.query(sql, (err, result) => {
         if (err) throw err;
+
         const answers = result;
         let correct = 0;
         let wrong = 0;
@@ -146,7 +149,7 @@ router.get('/:set', (req, res) => {
         if (!found) { 
             res.status(400).json({msg: `No test with id of ${req.params.testid} found`})
         } else {
-            //check if passed and send response 
+            //check if passed and add results to database
             for (let i = 0; i < answers.length; i++) {
                 if (answers[i].is_correct == 1) correct ++;
                 if (answers[i].is_correct == 0) wrong ++;
@@ -177,7 +180,6 @@ router.get('/:set', (req, res) => {
     });           
 
     
-
  });
 
 module.exports = router;

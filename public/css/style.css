@@ -1,0 +1,17 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    padding: 2rem;
+}
+
+p, h1, h3, #submit_answers {
+    margin: 1rem;
+} 
+
+#results-box {
+    display: none;
+}
