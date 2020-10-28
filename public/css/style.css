@@ -16,3 +16,27 @@ p, h1, h3, #submit_answers {
 #results-box {
     display: none;
 }
+
+.question,
+.details_container {
+    display: none;
+}
+
+.question.active, 
+.details_container.active {
+    display: block;
+}
+
+#submit_answers {
+    display: none;
+    width: 200px;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+}
+
+.btn {
+    width: 100px;
+}

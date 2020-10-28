@@ -2,7 +2,9 @@
 //Load Questions
 window.addEventListener("DOMContentLoaded", async () => {
     const questions = await getQuestions();
-    displayQuestions(questions);
+    await displayQuestions(questions);
+    const scriptUrl = 'js/index.js';
+    loadScript(scriptUrl);
 });
 
 //Generate random set function ( equal to min and less than max )
@@ -47,7 +49,7 @@ const displayQuestions = arrayOfObjects => {
 
         let filtered = arrayOfObjects.filter(object => object.question_id === arrayOfQuestionId[i]);
         //generate question
-        allQuestions += `<h4 id="question${i+1}" title="${filtered[0].question_id}">${i+1}. ${filtered[0].question_body}</h4>`;
+        allQuestions += `<div id="question${i+1}-container" class="question mb-4 fadeOutLeft"><h4 id="question${i+1}" title="${filtered[0].question_id}">${i+1}. ${filtered[0].question_body}</h4>`;
         //generate all answer choices
         const choices = filtered.map(object => `
                 <input id="choice${object.choice_id}" type="radio" name="${filtered[0].question_id}" value="${object.choice_id}" required>
@@ -56,7 +58,11 @@ const displayQuestions = arrayOfObjects => {
                 ` 
         );
         allQuestions += choices.join(''); 
-        allQuestions += `<div class="mb-4"></div>`;
+        allQuestions += `   <div class="controls">
+                                <button id="previous${i+1}" class="previous m-4 btn btn-primary">Go Back</button>
+                                <button id="next${i+1}" class="next m-4 btn btn-primary">Next</button>
+                            </div>
+                        </div>`;
     };
 
     if (questionsDiv) {
@@ -179,6 +185,9 @@ const displayResultPage = async (resultsObject) => {
     const resultsBox = document.getElementById('results-box');
     const form = document.getElementById('test');
 
+    resultsObject.passed ? displayResult.style.color = 'green' : displayResult.style.color = 'red';
+
+
     if(displayResult && score) {
         displayResult.innerHTML = `You ${resultsObject.passed ? "passed" : "failed" }`;
         score.innerHTML = `Your score: ${resultsObject.result*100}%`;
@@ -218,5 +227,11 @@ const displayResultPage = async (resultsObject) => {
 //Try again
 
 const tryAgainBtn = document.getElementById('try-again');
-
 tryAgainBtn.addEventListener('click', () => location.reload());
+
+//Load script function
+function loadScript (url) {
+    let script = document.createElement('script');
+    script.src = url;
+    document.body.appendChild(script);
+}
