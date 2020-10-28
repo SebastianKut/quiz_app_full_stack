@@ -47,14 +47,16 @@ const displayQuestions = arrayOfObjects => {
 
         let filtered = arrayOfObjects.filter(object => object.question_id === arrayOfQuestionId[i]);
         //generate question
-        allQuestions += `<p id="question${i+1}" title="${filtered[0].question_id}">${filtered[0].question_body}</p>`;
+        allQuestions += `<h4 id="question${i+1}" title="${filtered[0].question_id}">${i+1}. ${filtered[0].question_body}</h4>`;
         //generate all answer choices
         const choices = filtered.map(object => `
-                <input id="choice${object.choice_id}" type="radio" name="${filtered[0].question_id}" value="${object.choice_id} required">
-                <label for="choice${object.choice_id}">${object.choice_body}</label><br>
+                <input id="choice${object.choice_id}" type="radio" name="${filtered[0].question_id}" value="${object.choice_id}" required>
+                <label for="choice${object.choice_id}">${object.choice_body}</label>
+                <br>
                 ` 
         );
         allQuestions += choices.join(''); 
+        allQuestions += `<div class="mb-4"></div>`;
     };
 
     if (questionsDiv) {
@@ -83,10 +85,8 @@ async function submitAnswers (e) {
    const response = await addAnswers();
    const testId = response.testId;
    const results = await getResults(testId);
-   
-   console.log(results); 
    await displayResultPage(results);
-   }; 
+}
 };
 
 //Add user to database function (NOT USED ATM)
@@ -192,21 +192,31 @@ const displayResultPage = async (resultsObject) => {
 //Validate Form
  function validateInput() {
     const form = document.getElementById('test').elements;
+    const name = document.getElementById('first_name');
+    const surname = document.getElementById('last_name');
     let formValid = false;
     let counter = 0;
+    console.log('before' + counter);
 
+    if (name.value !== '' && surname.value !== '') counter++;
+    
     for (let i = 0; i < form.length; i++) {
-        if (form[i].checked || form[i].value!=='') counter++;                  
-    }
+        if (form[i].checked) counter++; 
+    };
 
-    if (counter !== 7) {
+    if (counter !== 6) {
             alert('Fill out all fields')
     } else {
             formValid = true;
       }
 
-    console.log(counter); //SORT OUT THIS FUCKIN COUNTER!!!!!!
+    console.log('after' + counter);
 
-    return formValid
+    return formValid;
 }
 
+//Try again
+
+const tryAgainBtn = document.getElementById('try-again');
+
+tryAgainBtn.addEventListener('click', () => location.reload());

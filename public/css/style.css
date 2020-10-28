@@ -6,6 +6,7 @@
 
 body {
     padding: 2rem;
+    background: bisque !important;
 }
 
 p, h1, h3, #submit_answers {

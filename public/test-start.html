@@ -2,33 +2,40 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <title>Start test</title>
 </head>
 <body>
-    <h1>MULTIPLE CHOICE TEST</h1>
-    <div id="results-box">
-        <h1>Your results:</h1>
-        <h3 id="test-result"></h3>
-        <p id="score"></p>
-        <button id="try-again">Try Again</button>
-        <button id="get-cert">Get Certificate</button>
-    </div>
-    
-    <form id="test" method="post" action="/">
-            <h3>User details</h3>
-            <input id="first_name" type="text" placeholder="First Name" name="first_name" required>
-            <input id="last_name" type="text" placeholder="Last Name" name="last_name" required>
-
-            <h3>Questions</h3>
-
-        <div id="questions"></div>
-
-            <input id="submit_answers" type="submit" value="Submit answers">
+    <div class="container mx-auto" style="width: 750px;">
+        <h1 class="text-center mb-4">MULTIPLE CHOICE TEST</h1>
+        <div id="results-box">
+            <h1 class="text-center mb-2">Your results:</h1>
+            <h3 class="text-center mb-2" id="test-result"></h3>
+            <h3 class="text-center mb-2" id="score"></h3>
+            <div class="text-center">
+                <button type="button" class="btn btn-primary m-5" id="try-again">Try Again</button>
+            </div>
+        </div>
         
-    </form>    
+        <form id="test" method="post" action="/">
+                <h3 class="text-center mb-4" >User details</h3>
+                <div class="text-center mb-4">
+                    <input id="first_name" type="text" placeholder="First Name" name="first_name" required>
+                    <input id="last_name" type="text" placeholder="Last Name" name="last_name" required>
+                </div>    
+
+            <div id="questions"></div>
+
+            <div class="text-center">
+                <input class="btn btn-primary" id="submit_answers" type="submit" value="Submit answers">
+            </div>
+
+        </form>    
+    </div>
 
     <script src="js/database.js"></script>
+    <script src="js/index.js"></script>
 </body>
 </html>
