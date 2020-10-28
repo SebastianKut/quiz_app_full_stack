@@ -9,9 +9,9 @@ Answers are posted to database and checked for being correct, then results are c
 
 ## API
 
-http://domain-name.com/api/test/$set_number - get method, fetches relevant set of questions from MySQL database, where "$set_number" represents set of questions. Currently there are 2 different sets of 5 questions in the database.
+http://domain-name.com/api/test/$set_number get method, fetches relevant set of questions from MySQL database, where "$set_number" represents set of questions. Currently there are 2 different sets of 5 questions in the database.
 
-http://domain-name.com/api/test/submittest - post method, submits answers and user details to database. Body object requires following key-values. Response is JSON object with testID 
+http://domain-name.com/api/test/submittest - post method, submits answers and user details to database. Body object requires following key-values. 
 
         {
             name: VARCHAR, 
@@ -27,6 +27,8 @@ http://domain-name.com/api/test/submittest - post method, submits answers and us
             questionFiveId: INTEGER,
             choiceFiveId: INTEGER
         }
+
+Response is JSON object with testID. 
 
 http://domain-name.com/api/test/getresults/$testid - checks result of submitted test using $testid and returns JSON with results.   
 
