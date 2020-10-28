@@ -1,7 +1,7 @@
 # Fullstack QUIZ APP
 
 Quiz app build from scratch with:
-### HTML, ### CSS, ### Vanilla JS, ### Node, ### Express and ### MySql.
+##### HTML, CSS, Vanilla JS, Node, Express and MySql.
 
 It displays random 5-question quiz from MySql database. Data is fetched through REST API build with Node JS and Express.
 
