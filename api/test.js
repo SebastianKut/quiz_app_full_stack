@@ -5,9 +5,9 @@ const router = express.Router();
 
 //Create connection=========================================
 const db = mysql.createConnection({
-    host:       'localhost',
-    user:       'admin',
-    password:   'test1234',
+    host:       '192.168.64.2',
+    user:       'username',
+    password:   'password',
     database:   'quiz',
     multipleStatements: true
 });
@@ -16,6 +16,7 @@ const db = mysql.createConnection({
 //In case of problems with connection run the query in the db 
 //ALTER USER 'admin'@'localhost' IDENTIFIED WITH mysql_native_password BY 'test1234';
 //FLUSH PRIVILEGES;
+//also make sure to enter port number
 
 db.connect((err) => {
     if (err) {
